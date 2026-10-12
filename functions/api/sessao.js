@@ -12,7 +12,14 @@
 // id_token em memoria, apenas sem persistir a sessao.
 
 import { verificarToken } from "./desenho.js";
-import { cookieSessao, cookieLimpo, criarSessao, sessaoAtual, encerrarSessao } from "../../lib/sessao.js";
+import {
+  cookieSessao,
+  cookieLimpo,
+  criarSessao,
+  sessaoAtual,
+  encerrarSessao,
+  bancoD1,
+} from "../../lib/sessao.js";
 
 function json(status, corpo, extras) {
   return new Response(JSON.stringify(corpo), {
@@ -35,7 +42,7 @@ export async function onRequest(context) {
 
   // Ordem das verificacoes: metodo (405), token (401), banco (503).
   if (request.method === "GET") {
-    if (!env.DB) {
+    if (!bancoD1(env)) {
       return semBanco();
     }
 
@@ -62,7 +69,7 @@ export async function onRequest(context) {
       return json(401, { erro: "Token invalido, expirado ou e-mail nao verificado." });
     }
 
-    if (!env.DB) {
+    if (!bancoD1(env)) {
       return semBanco();
     }
 
