@@ -122,8 +122,27 @@ async function criarSessao() {
       mostrarConta();
       return;
     }
+
+    // Token recusado pelo servidor: nao ha sessao nem desenho possivel.
+    if (resposta.status === 401) {
+      idToken = "";
+      mostrarErro("Não foi possível validar sua conta. Faça login com o Google novamente.");
+      return;
+    }
+
+    // Diagnostico da configuracao do D1: o login funcionou, so a persistencia
+    // falhou. Aparece apenas enquanto o banco nao estiver pronto.
+    if (resposta.status === 503) {
+      mostrarErro(
+        "Login feito, mas a sessão não persistiu: associe o banco D1 (binding DB) ao projeto no Pages e faça um novo deploy."
+      );
+    } else if (resposta.status >= 500) {
+      mostrarErro(
+        "Login feito, mas a sessão não gravou no D1. Rode no Console do banco o SQL das tabelas usuarios e sessoes."
+      );
+    }
   } catch (erro) {
-    // cai aqui em vez de seguir para o estado sem sessao
+    // sem rede seguimos como logado apenas nesta visita
   }
 
   // Sem D1 (503) ou falha de rede: logado apenas nesta visita.
