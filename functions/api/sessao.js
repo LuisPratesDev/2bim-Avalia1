@@ -1,10 +1,12 @@
 // functions/api/sessao.js
 // Sessão persistente do login Google.
 //
-//   GET    /api/sessao -> 200 {"logado": true,  "email": "..."} | {"logado": false}
+//   GET    /api/sessao -> 200 {"logado": true, "email": "...", "banco": "pronto"}
+//                          | {"logado": false, "banco": "pronto" | "sem-tabelas"}
+//                          503 se o D1 nao estiver associado
 //   POST   /api/sessao -> Authorization: Bearer <id_token> valida o token,
 //                          grava a sessao no D1 e devolve o cookie HttpOnly
-//                          200 {"logado": true, "email": "..."}
+//                          200 {"logado": true, "email": "...", "expira_em": 0}
 //   DELETE /api/sessao -> apaga a sessao e limpa o cookie
 //   outros métodos     -> 405
 //
@@ -19,6 +21,7 @@ import {
   sessaoAtual,
   encerrarSessao,
   bancoD1,
+  schemaPronto,
 } from "../../lib/sessao.js";
 
 function json(status, corpo, extras) {
@@ -47,12 +50,18 @@ export async function onRequest(context) {
     }
 
     const sessao = await sessaoAtual(env, request);
+    const banco = (await schemaPronto(env)) ? "pronto" : "sem-tabelas";
 
     if (sessao === null) {
-      return json(200, { logado: false });
+      return json(200, { logado: false, banco });
     }
 
-    return json(200, { logado: true, email: sessao.email, expira_em: sessao.expira_em });
+    return json(200, {
+      logado: true,
+      email: sessao.email,
+      expira_em: sessao.expira_em,
+      banco,
+    });
   }
 
   if (request.method === "POST") {

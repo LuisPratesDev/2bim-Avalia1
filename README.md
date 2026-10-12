@@ -123,7 +123,7 @@ O plano gratuito permite até 10 bancos D1 por conta; este projeto usa apenas um
 
 | Rota | O que faz |
 |---|---|
-| `GET /api/sessao` | `200 {"logado": true, "email": "..."}` ou `200 {"logado": false}`; `503` quando o D1 não está associado |
+| `GET /api/sessao` | `200` com `logado`, `email`, `expira_em` e `banco` — o campo `banco` diz `"pronto"` ou `"sem-tabelas"` e permite conferir a configuração sem logar; `503` quando o D1 não está associado |
 | `POST /api/sessao` | `Authorization: Bearer <id_token>` → valida o token, grava a sessão e devolve o cookie `HttpOnly` |
 | `DELETE /api/sessao` | Apaga a sessão no banco e limpa o cookie |
 | Outros métodos | `405` |
