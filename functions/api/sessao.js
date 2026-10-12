@@ -67,8 +67,12 @@ export async function onRequest(context) {
     }
 
     try {
-      const token = await criarSessao(env, dados.email);
-      return json(200, { logado: true, email: dados.email }, { "Set-Cookie": cookieSessao(token) });
+      const sessao = await criarSessao(env, dados.email);
+      return json(
+        200,
+        { logado: true, email: dados.email, expira_em: sessao.expira_em },
+        { "Set-Cookie": cookieSessao(sessao.token) }
+      );
     } catch {
       return json(500, { erro: "Falha ao gravar a sessao. Rode o SQL das tabelas usuarios e sessoes no D1." });
     }

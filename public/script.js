@@ -14,6 +14,7 @@ let idToken = "";
 let email = "";
 let sessaoAtiva = false;
 let clientId = "";
+let expiraEm = 0;
 
 const formulario = document.getElementById("formulario");
 const campoNumero = document.getElementById("numero");
@@ -24,6 +25,7 @@ const googleLogin = document.getElementById("google-login");
 const conta = document.getElementById("conta");
 const contaEmail = document.getElementById("conta-email");
 const contaInicial = document.getElementById("conta-inicial");
+const contaRotulo = document.getElementById("conta-rotulo");
 const botaoSair = document.getElementById("sair");
 
 let svgAtual = "";
@@ -36,10 +38,22 @@ function mostrarErro(texto) {
    Conta conectada
  * -------------------------------------------------------------------------- */
 
+// Exibicao curta (22/10) da validade da sessão, vinda do servidor.
+function dataCurta(epoca) {
+  try {
+    return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit" }).format(
+      new Date(epoca * 1000)
+    );
+  } catch (erro) {
+    return "";
+  }
+}
+
 function mostrarConta() {
   contaInicial.textContent = (email || "?").charAt(0).toUpperCase();
   contaEmail.textContent = email || "conta Google";
   contaEmail.title = email || "";
+  contaRotulo.textContent = expiraEm && dataCurta(expiraEm) ? "sessão até " + dataCurta(expiraEm) : "conectado";
   conta.hidden = false;
   googleLogin.hidden = true;
   document.body.classList.add("logado");
@@ -49,6 +63,7 @@ function ocultarConta() {
   idToken = "";
   email = "";
   sessaoAtiva = false;
+  expiraEm = 0;
   conta.hidden = true;
   googleLogin.hidden = false;
   document.body.classList.remove("logado");
@@ -80,6 +95,7 @@ async function carregarSessao() {
     if (dados.logado) {
       email = dados.email;
       sessaoAtiva = true;
+      expiraEm = dados.expira_em || 0;
       mostrarConta();
     }
   } catch (erro) {
@@ -102,6 +118,7 @@ async function criarSessao() {
       const dados = await resposta.json();
       email = dados.email;
       sessaoAtiva = true;
+      expiraEm = dados.expira_em || 0;
       mostrarConta();
       return;
     }
@@ -112,6 +129,7 @@ async function criarSessao() {
   // Sem D1 (503) ou falha de rede: logado apenas nesta visita.
   email = emailDoToken(idToken);
   sessaoAtiva = false;
+  expiraEm = 0;
   mostrarConta();
 }
 
