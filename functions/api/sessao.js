@@ -28,13 +28,17 @@ function json(status, corpo, extras) {
 export async function onRequest(context) {
   const { request, env } = context;
 
-  if (!env.DB) {
-    return json(503, {
+  const semBanco = () =>
+    json(503, {
       erro: "Banco D1 nao associado. Crie o banco, associe o binding DB ao projeto no Pages e faca um novo deploy.",
     });
-  }
 
+  // Ordem das verificacoes: metodo (405), token (401), banco (503).
   if (request.method === "GET") {
+    if (!env.DB) {
+      return semBanco();
+    }
+
     const sessao = await sessaoAtual(env, request);
 
     if (sessao === null) {
@@ -56,6 +60,10 @@ export async function onRequest(context) {
 
     if (dados === null) {
       return json(401, { erro: "Token invalido, expirado ou e-mail nao verificado." });
+    }
+
+    if (!env.DB) {
+      return semBanco();
     }
 
     try {
