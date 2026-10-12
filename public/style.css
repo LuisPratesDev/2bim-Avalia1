@@ -1,0 +1,551 @@
+/* ==========================================================================
+   Desenho Assinado — folha de estilo
+   Mesma linguagem do SVG gerado: fundo escuro do GitHub, título em serifa,
+   rótulos em monoespaçada e traços de 1px. O motivo gráfico é o próprio
+   círculo de 240 pontos que gera as figuras.
+   ========================================================================== */
+
+:root {
+  /* paleta original da página */
+  --fundo: #0d1117;
+  --superficie: #161b22;
+  --borda: #30363d;
+  --texto: #e6edf3;
+  --texto-suave: #8b949e;
+  --destaque: #58a6ff;
+  --erro: #ff7b72;
+
+  /* derivações para dar profundidade sem fugir da paleta */
+  --borda-forte: #454c54;
+  --texto-terciario: #6e7681;
+  --superficie-alta: #1c2128;
+  --fonte-titulo: Georgia, "Times New Roman", serif;
+  --fonte-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+  --raio: 12px;
+  --transicao: 180ms cubic-bezier(0.2, 0.6, 0.3, 1);
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Plano de fundo: halo frio no topo e anéis concêntricos que espelham a
+   circunferência de 240 pontos. Fixo, inerte ao mouse, some nas bordas. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(760px 440px at 50% -8%, rgba(88, 166, 255, 0.14), transparent 70%),
+    repeating-radial-gradient(
+      circle at 50% 44%,
+      transparent 0 137px,
+      rgba(48, 54, 61, 0.6) 137px 138px
+    );
+  -webkit-mask-image: radial-gradient(closest-side at 50% 44%, #000 45%, transparent 100%);
+  mask-image: radial-gradient(closest-side at 50% 44%, #000 45%, transparent 100%);
+}
+
+::selection {
+  background: rgba(88, 166, 255, 0.32);
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--fundo);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #21262d;
+  border: 2px solid var(--fundo);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--borda);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(40px, 9vh, 84px) 20px 56px;
+}
+
+/* --------------------------------------------------------------------------
+   Cabeçalho
+   -------------------------------------------------------------------------- */
+
+header {
+  margin-bottom: 30px;
+}
+
+.selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 20px;
+  padding: 5px 12px;
+  font-family: var(--fonte-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+  background: rgba(22, 27, 34, 0.75);
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+}
+
+.selo .ponto {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--destaque);
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.18);
+  animation: pulsar 2.6s ease-in-out infinite;
+}
+
+@keyframes pulsar {
+  50% {
+    box-shadow: 0 0 0 6px rgba(88, 166, 255, 0.04);
+    opacity: 0.7;
+  }
+}
+
+h1 {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  font-size: clamp(2.1rem, 6vw, 2.9rem);
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+}
+
+h1 em {
+  font-style: italic;
+  color: var(--texto);
+}
+
+.subtitulo {
+  max-width: 54ch;
+  margin: 14px 0 0;
+  color: var(--texto-suave);
+  font-size: 1.02rem;
+}
+
+/* fio editorial que fecha o cabeçalho */
+header::after {
+  content: "";
+  display: block;
+  height: 1px;
+  margin-top: 26px;
+  background: linear-gradient(
+    90deg,
+    rgba(88, 166, 255, 0.8),
+    var(--borda) 45%,
+    transparent
+  );
+}
+
+/* --------------------------------------------------------------------------
+   Formulário
+   -------------------------------------------------------------------------- */
+
+form {
+  position: relative;
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  background:
+    linear-gradient(180deg, rgba(88, 166, 255, 0.05), transparent 130px),
+    var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: 0 28px 54px -36px rgba(0, 0, 0, 0.95);
+}
+
+/* fio de luz na borda superior do cartão */
+form::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 26px;
+  right: 26px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(88, 166, 255, 0.75),
+    transparent
+  );
+}
+
+.campo-topo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+label {
+  font-family: var(--fonte-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+
+.faixa {
+  font-family: var(--fonte-mono);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  color: var(--texto-terciario);
+}
+
+input {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: var(--fonte-mono);
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--texto);
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  transition:
+    border-color var(--transicao),
+    box-shadow var(--transicao),
+    background-color var(--transicao);
+}
+
+input:hover {
+  border-color: var(--borda-forte);
+}
+
+input:focus {
+  outline: none;
+  background: #0b0f14;
+  border-color: rgba(88, 166, 255, 0.65);
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.16);
+}
+
+input::placeholder {
+  color: var(--texto-terciario);
+}
+
+/* setas nativas poluem o campo: o intervalo já está ao lado do rótulo */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.acessos {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 18px;
+  border-top: 1px solid var(--borda);
+}
+
+.google {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.google iframe {
+  border-radius: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   Botões
+   -------------------------------------------------------------------------- */
+
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font: inherit;
+  font-family: var(--fonte-mono);
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fundo);
+  background: var(--destaque);
+  border: 1px solid #3d84d2;
+  border-radius: 8px;
+  box-shadow: none;
+  cursor: pointer;
+  transition:
+    transform var(--transicao),
+    box-shadow var(--transicao),
+    filter var(--transicao),
+    color var(--transicao),
+    background-color var(--transicao),
+    border-color var(--transicao);
+}
+
+button:hover {
+  transform: translateY(-1px);
+  background: #4a97ee;
+  box-shadow: none;
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--destaque);
+  outline-offset: 2px;
+}
+
+/* botão secundário: contorno discreto que só acende no hover */
+#baixar {
+  margin-top: 18px;
+  color: var(--texto);
+  background: rgba(22, 27, 34, 0.6);
+  border-color: var(--borda);
+  box-shadow: none;
+}
+
+#baixar::before {
+  content: "↓";
+  font-size: 1rem;
+  line-height: 1;
+}
+
+#baixar:hover {
+  color: var(--destaque);
+  background: rgba(88, 166, 255, 0.08);
+  border-color: rgba(88, 166, 255, 0.5);
+  transform: none;
+  box-shadow: none;
+  filter: none;
+}
+
+/* --------------------------------------------------------------------------
+   Mensagem de erro
+   -------------------------------------------------------------------------- */
+
+#mensagem {
+  margin: 0;
+}
+
+#mensagem:empty {
+  display: none;
+}
+
+#mensagem:not(:empty) {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-top: 16px;
+  padding: 11px 14px;
+  font-family: var(--fonte-mono);
+  font-size: 0.84rem;
+  color: var(--erro);
+  background: rgba(255, 123, 114, 0.08);
+  border: 1px solid rgba(255, 123, 114, 0.35);
+  border-left-width: 3px;
+  border-radius: 8px;
+}
+
+#mensagem:not(:empty)::before {
+  content: "!";
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--fundo);
+  background: var(--erro);
+  border-radius: 50%;
+}
+
+/* --------------------------------------------------------------------------
+   Área do desenho
+   -------------------------------------------------------------------------- */
+
+figure {
+  margin: 24px 0 0;
+}
+
+/* estado vazio: moldura tracejada com o anel girando devagar */
+#desenho:empty {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 18px;
+  min-height: 300px;
+  padding: 44px 20px;
+  background: rgba(22, 27, 34, 0.35);
+  border: 1px dashed var(--borda);
+  border-radius: var(--raio);
+}
+
+#desenho:empty::before {
+  content: "";
+  width: 88px;
+  height: 88px;
+  border: 1px dashed rgba(88, 166, 255, 0.5);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 14px rgba(88, 166, 255, 0.05);
+  animation: girar 30s linear infinite;
+}
+
+#desenho:empty::after {
+  content: "área de saída · aguardando um número";
+  font-family: var(--fonte-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--texto-terciario);
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* estado com figura: prancha com barra de metadados */
+#desenho:not(:empty) {
+  padding: 16px 16px 18px;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: 0 34px 64px -44px rgba(0, 0, 0, 0.95);
+}
+
+#desenho:not(:empty)::before {
+  content: "saída · svg · 800 × 880";
+  display: block;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  font-family: var(--fonte-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--texto-terciario);
+  border-bottom: 1px solid var(--borda);
+}
+
+figure svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   Rodapé
+   -------------------------------------------------------------------------- */
+
+.rodape {
+  margin-top: 44px;
+  padding-top: 18px;
+  border-top: 1px solid var(--borda);
+}
+
+.rodape p {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 0;
+  margin: 0;
+  font-family: var(--fonte-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--texto-terciario);
+}
+
+.rodape span + span::before {
+  content: "·";
+  margin: 0 12px;
+  color: var(--borda-forte);
+}
+
+/* --------------------------------------------------------------------------
+   Telas estreitas
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 560px) {
+  main {
+    padding-top: 36px;
+  }
+
+  form {
+    padding: 18px;
+  }
+
+  .acessos {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .google {
+    justify-content: center;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
